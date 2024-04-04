@@ -1,5 +1,5 @@
 def find_santa_direction(santa_idx):
-    global coord, N, fail, knockdown
+    global coord, N, fail, knockdown, turn_idx
     santa_r, santa_c = coord[santa_idx]
     rudolph_r, rudolph_c = coord[0]
     dr = [-1, 0, 1, 0]
@@ -7,7 +7,7 @@ def find_santa_direction(santa_idx):
     direction = []
     if fail[santa_idx]:
         return None
-    elif knockdown[santa_idx]:
+    elif knockdown[santa_idx] >= turn_idx:
         return None
     for i in range(4):
         next_r, next_c = santa_r + dr[i], santa_c + dc[i]
@@ -51,7 +51,7 @@ def find_rudolph_direction():
 
 
 def collision(santa_idx, rudolph_collision, direction):
-    global scores, C, D, coord, knockdown, turn_idx, knockdown_turn_list
+    global scores, C, D, coord, knockdown, turn_idx
     dr, dc = direction
     if rudolph_collision:  # 루돌프가 박치기했을 때
         score = C
@@ -61,9 +61,8 @@ def collision(santa_idx, rudolph_collision, direction):
 
     scores[santa_idx] += score
     santa_r, santa_c = coord[santa_idx]
-    knockdown_turn_list[turn_idx].append(santa_idx)
     next_r, next_c = santa_r + score * dr, santa_c + score * dc
-    knockdown[santa_idx] = 1
+    knockdown[santa_idx] = turn_idx + 1
     if not ({next_r, next_c} < set(range(1, N + 1))):
         fail[santa_idx] = 1
     elif [next_r, next_c] in coord:
@@ -96,16 +95,11 @@ dropout = [0 for _ in range(P + 1)]
 scores = [0 for _ in range(P + 1)]
 fail = [0 for _ in range(P + 1)]
 interaction_list = [0 for _ in range(P + 1)]
-knockdown_turn_list = [[] for _ in range(M)]
 for i in range(P):
     p, r, c = map(int, input().split())
     coord[p] = [r, c]
 
-for turn_idx in range(M):
-    if turn_idx > 0:
-        knockdown = [0 for _ in range(P + 1)]
-        for knocked_santa_idx in knockdown_turn_list[turn_idx-1]:
-            knockdown[knocked_santa_idx] = 1
+for turn_idx in range(1, M+1):
     rudolph_direction = find_rudolph_direction()
     if rudolph_direction is None:
         break
@@ -130,8 +124,8 @@ for turn_idx in range(M):
                 scores[j] += 1
     else:
         break
-    # print(f'{turn_idx+1} scores: {scores}')
-    # print(f'{turn_idx+1} cooord: {coord}')
-    # print(f'{turn_idx+1} fail: {fail}')
-    # print(f'{turn_idx+1} knockdown: {knockdown}')
+    # print(f'{turn_idx} scores: {scores}')
+    # print(f'{turn_idx} cooord: {coord}')
+    # print(f'{turn_idx} fail: {fail}')
+    # print(f'{turn_idx} knockdown: {knockdown}')
 print(' '.join(map(str,scores[1:])))
