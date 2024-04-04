@@ -128,6 +128,8 @@ for turn_idx in range(M):
         for j in range(1, P+1): # interaction 끝난 이후 살아남은 산타 점수 +1
             if not fail[j]:
                 scores[j] += 1
+    else:
+        break
     # print(f'{turn_idx+1} scores: {scores}')
     # print(f'{turn_idx+1} cooord: {coord}')
     # print(f'{turn_idx+1} fail: {fail}')
