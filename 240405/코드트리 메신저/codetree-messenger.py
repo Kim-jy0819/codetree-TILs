@@ -28,11 +28,14 @@ for _ in range(Q-1):
         node = int(command_line[1])
         q = deque([[node, 1]])
         all_child = []
+        children_list = [[] for _ in range(N+1)]
+        for child_idx, parent in enumerate(parents):
+            children_list[parent].append(child_idx)
 
         while q:
             p_node, depth = q.popleft()
-            for child_node in range(1, N+1):
-                if parents[child_node] == p_node and alarm_settings[child_node]==1:
+            for child_node in children_list[p_node]:
+                if alarm_settings[child_node]==1:
                     q.append([child_node, depth + 1])
                     if power_list[child_node] >= depth:
                         all_child.append(child_node)
