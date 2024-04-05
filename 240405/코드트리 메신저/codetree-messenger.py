@@ -26,15 +26,19 @@ for _ in range(Q-1):
         parents[node2] = temp
     else:
         node = int(command_line[1])
-        q = deque([node])
+        q = deque([[node, 1]])
         all_child = []
-        depth = 1
+
         while q:
-            p_node = q.popleft()
+            p_node, depth = q.popleft()
             for child_node in range(1, N+1):
-                if parents[child_node] == p_node and alarm_settings[child_node]==1 and power_list[child_node] >= depth:
-                    q.append(child_node)
-                    all_child.append(child_node)
+                if parents[child_node] == p_node and alarm_settings[child_node]==1:
+                    q.append([child_node, depth + 1])
+                    if power_list[child_node] >= depth:
+                        all_child.append(child_node)
             
-            depth += 1
+        # print(parents)
+        # print(all_child)
+        # print(alarm_settings)
+        # print(power_list)
         print(len(all_child))
